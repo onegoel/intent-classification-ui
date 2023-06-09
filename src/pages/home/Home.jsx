@@ -1,15 +1,18 @@
 import React from 'react';
-import {Button, Input, Typography, Skeleton, Table} from 'antd';
+import {
+  Button, Input, Typography, Skeleton, Table, Dropdown, Space,
+} from 'antd';
 import {Header} from 'antd/es/layout/layout';
-import {GithubOutlined} from '@ant-design/icons';
+import {GithubOutlined, DownOutlined} from '@ant-design/icons';
 import axios from 'axios';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import GaugeChart from 'react-gauge-chart';
 
 const Home = () => {
   const [input, setInput] = React.useState('');
   const [intents, setIntents] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [selectedModel, setSelectedModel] = React.useState(null);
+  const [model, setModel] = React.useState(null);
 
   const toFixed =
     (n, fixed) => ~~(Math.pow(10, fixed) * n) / Math.pow(10, fixed);
@@ -18,7 +21,9 @@ const Home = () => {
     setLoading(true);
     const body = {
       input,
+      model,
     };
+    console.log(body);
     axios.post('http://localhost:6003/api/classify', body)
         .then((response) => {
           const {intent_probabilities: orderedIntents} = response.data.intents;
@@ -40,6 +45,34 @@ const Home = () => {
   const handleInput = (value) => {
     setInput(value);
   };
+  const dropdownItems = [
+    {
+      key: '1',
+      label: (
+        <a
+          target='_blank'
+          rel='noopener noreferrer'
+          onClick={() => {
+            setSelectedModel('Supervised DistilBERT');
+            setModel('distilbert');
+          }}
+        >Supervised DistilBERT</a>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <a
+          target='_blank'
+          rel='noopener noreferrer'
+          onClick={() => {
+            setSelectedModel('Few Shot Multilingual BERT');
+            setModel('bert');
+          }}
+        >Few Shot Multilingual BERT</a>
+      ),
+    },
+  ];
   return (
     <div
       style={{
@@ -103,11 +136,33 @@ const Home = () => {
             color: 'white',
           }}
           onClick={() => handleGetIntents()}
-          disabled={input.length === 0}
+          disabled={input.length === 0 && selectedModel === null}
           loading={loading}
         >
           Get Intents
         </Button>
+        <div
+          style={{
+            marginLeft: '1rem',
+
+          }}
+        >
+          <Dropdown
+            menu={{
+              items: dropdownItems,
+              selectable: true,
+              defaultSelectedKeys: ['1'],
+
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Space>
+                {selectedModel ? selectedModel : 'Select Model'}
+                <DownOutlined />
+              </Space>
+            </a>
+          </Dropdown>
+        </div>
       </div>
 
       <div
