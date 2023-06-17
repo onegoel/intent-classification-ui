@@ -53,10 +53,10 @@ const Home = () => {
           target='_blank'
           rel='noopener noreferrer'
           onClick={() => {
-            setSelectedModel('Supervised DistilBERT');
+            setSelectedModel('DistilBERT');
             setModel('distilbert');
           }}
-        >Supervised DistilBERT</a>
+        >DistilBERT</a>
       ),
     },
     {
@@ -66,10 +66,10 @@ const Home = () => {
           target='_blank'
           rel='noopener noreferrer'
           onClick={() => {
-            setSelectedModel('Few Shot Multilingual BERT');
+            setSelectedModel('mBERT');
             setModel('bert');
           }}
-        >Few Shot Multilingual BERT</a>
+        >mBERT</a>
       ),
     },
   ];
